@@ -83,9 +83,12 @@ module SimpleNavigation
     #     menu.item :posts, "Posts", posts_path
     #   end
     #
+    @@mutex = Mutex.new
     def render_navigation(options = {}, &block)
-      container = active_navigation_item_container(options, &block)
-      container && container.render(options)
+      @@mutex.synchronize do
+        container = active_navigation_item_container(options, &block)
+        container && container.render(options)
+      end
     end
 
     # Returns the name of the currently active navigation item belonging to the
